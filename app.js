@@ -1,10 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/userProfile");
 
 const app = express();
-
+ 
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 
@@ -21,4 +22,11 @@ app.use((req, res, next) => {
 
 app.use("/user", userRoutes);
 
-app.listen(process.env.PORT || 4000);
+mongoose
+  .connect(
+    "mongodb+srv://dhruvsakariya:dhruvsakariya@cluster0.zjsru.mongodb.net/mernStackDatabase?retryWrites=true&w=majority"
+  )
+  .then((result) => {
+    app.listen(process.env.PORT || 4000);
+  })
+  .catch((err) => console.log(err));
