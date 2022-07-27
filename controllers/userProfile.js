@@ -6,81 +6,29 @@ exports.getUserProfile = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: "validation failed, entered data is incorrect",
-      errors: errors.array(),
-    });
+    const error = new Error("validation failed, entered data is incorrect");
+    error.statusCode = 422;
+    throw error;
   }
 
   const email = req.body.email;
 
-  console.log({ email });
+  User.findOne({ email })
+    .then((userProfile) => {
+      if (!userProfile) {
+        const error = new Error("Could not find User");
+        error.statusCode = 404;
+        throw error;
+      }
 
-  res.status(200).json({
-    user: {
-      firstName: "Dhruv",
-      lastName: "Sakariya",
-      email: "dhruvsakariya2304@gmail.com",
-      mobile: "(098) 765-4321",
-      profileUrl:
-        "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp",
-      gender: "Male",
-      education: "Full Stack Developer",
-      address: "Bay Area, San Francisco, CA",
-      socialMedia: {
-        personal: "https://mdbootstrap.com1",
-        github: "https://mdbootstrap.com2",
-        twitter: "https://mdbootstrap.com3",
-        instagram: "https://mdbootstrap.com4",
-        facebook: "https://mdbootstrap.com5",
-      },
-
-      Skills: [
-        {
-          name: "Web Design",
-          skillRate: "30%",
-        },
-        {
-          name: "Website Markup",
-          skillRate: "40%",
-        },
-        {
-          name: "One Page",
-          skillRate: "50%",
-        },
-        {
-          name: "Mobile Template",
-          skillRate: "60%",
-        },
-        {
-          name: "Backend API",
-          skillRate: "70%",
-        },
-      ],
-      Hobbies: [
-        {
-          name: "Web Design",
-          skillRate: "50%",
-        },
-        {
-          name: "Website Markup",
-          skillRate: "40%",
-        },
-        {
-          name: "One Page",
-          skillRate: "30%",
-        },
-        {
-          name: "Mobile Template",
-          skillRate: "20%",
-        },
-        {
-          name: "Backend API",
-          skillRate: "10%",
-        },
-      ],
-    },
-  });
+      res.status(200).json({ userProfile });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
 
 exports.createUserProfile = (req, res, next) => {
@@ -94,6 +42,8 @@ exports.createUserProfile = (req, res, next) => {
     education,
     address,
     socialMedia,
+    Skills,
+    Hobbies,
   } = req.body;
 
   const user = new User({
@@ -106,6 +56,8 @@ exports.createUserProfile = (req, res, next) => {
     education,
     address,
     socialMedia,
+    Skills,
+    Hobbies,
   });
   user
     .save()
@@ -116,7 +68,12 @@ exports.createUserProfile = (req, res, next) => {
         user: result,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
 
 exports.updateUserProfile = (req, res, next) => {
@@ -127,4 +84,31 @@ exports.updateUserProfile = (req, res, next) => {
     message: "Post created successfully!",
     post: { id: new Date().toISOString(), title: title, content: content },
   });
+};
+
+exports.uploadImages = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error("validation failed, entered data is incorrect");
+    error.statusCode = 422;
+    throw error;
+  }
+
+  if (!req.files) {
+    const error = new Error("No image provided");
+    error.statusCode = 422;
+    throw error;
+  } else {
+    const reqFiles = [];
+    const url = req.protocol + "://" + req.get("host");
+    for (var i = 0; i < req.files.length; i++) {
+      reqFiles.push(url + "/images/" + req.files[i].filename);
+    }
+    console.log(req.files.length, reqFiles);
+    res.status(201).json({
+      images: reqFiles,
+      message: "Post created success fully",
+    });
+  }
 };

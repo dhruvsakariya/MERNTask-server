@@ -38,6 +38,22 @@ const userSchema = new Schema({
     type: Object,
     required: true,
   },
+  Skills: [
+    {
+      name: { type: String, required: true },
+      skillRate: { type: String, required: true },
+    },
+  ],
+  Hobbies: [
+    {
+      name: { type: String, required: true },
+      skillRate: { type: String, required: true },
+    },
+  ],
+  Gallary: {
+    type: [String],
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

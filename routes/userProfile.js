@@ -20,4 +20,6 @@ router.post("/createProfile", userProfileController.createUserProfile);
 
 router.post("/updateProfile", userProfileController.updateUserProfile);
 
+router.post("/gallary", userProfileController.uploadImages);
+
 module.exports = router;
