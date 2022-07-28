@@ -1,6 +1,8 @@
 const express = require("express");
 const { body } = require("express-validator");
 
+const isAuth = require("../middleware/isAuth");
+
 const userProfileController = require("../controllers/userProfile");
 
 const User = require("../models/user");
@@ -8,16 +10,13 @@ const User = require("../models/user");
 const router = express.Router();
 
 // Get /user/profile
-router.get("/profile", userProfileController.getUserProfile);
-
-// Post /user/createProfile
-router.post("/createProfile", userProfileController.createUserProfile);
+router.get("/profile", isAuth, userProfileController.getUserProfile);
 
 // Post /user/updateProfile
-router.post("/updateProfile", userProfileController.updateUserProfile);
+router.post("/updateProfile", isAuth, userProfileController.updateUserProfile);
 
 // Post /user/gallary
-router.post("/gallary", userProfileController.uploadImages);
+router.post("/gallary", isAuth, userProfileController.uploadImages);
 
 router.put(
   "/signup",
@@ -32,8 +31,11 @@ router.put(
       });
     })
     .normalizeEmail(),
-  body("password").trim().length({ min: 6 }),
+  body("password").trim().isLength({ min: 6 }),
+  isAuth,
   userProfileController.signUp
 );
+
+router.post("/login", isAuth, userProfileController.logIn);
 
 module.exports = router;
