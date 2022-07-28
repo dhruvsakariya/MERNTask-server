@@ -32,10 +32,9 @@ router.put(
     })
     .normalizeEmail(),
   body("password").trim().isLength({ min: 6 }),
-  isAuth,
   userProfileController.signUp
 );
 
-router.post("/login", isAuth, userProfileController.logIn);
+router.post("/login",  userProfileController.logIn);
 
 module.exports = router;
