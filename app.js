@@ -72,4 +72,4 @@ mongoose
   .then((result) => {
     app.listen(process.env.PORT || 4000);
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.log("Mongo db",err));

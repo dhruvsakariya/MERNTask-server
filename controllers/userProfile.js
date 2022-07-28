@@ -62,7 +62,6 @@ exports.createUserProfile = (req, res, next) => {
   user
     .save()
     .then((result) => {
-      console.log(result);
       res.status(201).json({
         message: "User Created ",
         user: result,
@@ -105,7 +104,6 @@ exports.uploadImages = (req, res, next) => {
     for (var i = 0; i < req.files.length; i++) {
       reqFiles.push(url + "/images/" + req.files[i].filename);
     }
-    console.log(req.files.length, reqFiles);
     res.status(201).json({
       images: reqFiles,
       message: "Post created success fully",
