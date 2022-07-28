@@ -1,5 +1,7 @@
 const { validationResult } = require("express-validator");
 
+const path = require("path");
+const fs = require("fs");
 const User = require("../models/user");
 
 exports.getUserProfile = (req, res, next) => {
@@ -11,7 +13,7 @@ exports.getUserProfile = (req, res, next) => {
     throw error;
   }
 
-  const email = req.body.email;
+  const email = "dhruvsakariya2304@gmail.com";
 
   User.findOne({ email })
     .then((userProfile) => {
@@ -109,4 +111,21 @@ exports.uploadImages = (req, res, next) => {
       message: "Post created success fully",
     });
   }
+};
+
+exports.signUp = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error("validation failed, entered data is incorrect");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+};
+
+// utility
+const deleteImage = (imagePath) => {
+  imagePath = path.join(__dirname, "..", imagePath);
+  fs.unlink(imagePath, (err) => console.log(err));
 };

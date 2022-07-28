@@ -62,7 +62,8 @@ app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  res.status(status).json({ message });
+  const data = error.data;
+  res.status(status).json({ message, data });
 });
 
 mongoose
@@ -72,4 +73,4 @@ mongoose
   .then((result) => {
     app.listen(process.env.PORT || 4000);
   })
-  .catch((err) => console.log("Mongo db",err));
+  .catch((err) => console.log("Mongo db", err));
