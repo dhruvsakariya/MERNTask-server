@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
 
   let decodedToken;
   try {
-    console.log(token)
+
     decodedToken = jwt.verify(token, "secretKey");
   } catch (error) {
     error.statusCode = 500;

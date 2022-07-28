@@ -36,12 +36,19 @@ exports.getUserProfile = (req, res, next) => {
 };
 
 exports.updateUserProfile = (req, res, next) => {
-  const title = req.body.title;
-  const content = req.body.content;
+  const updateDetails = req.body.updateDetails;
 
-  res.status(201).json({
-    message: "Post created successfully!",
-    post: { id: new Date().toISOString(), title: title, content: content },
+  User.findByIdAndUpdate(req.userId, updateDetails, function (err, data) {
+    if (err) {
+      const error = new Error("Could not find User");
+      error.statusCode = 401;
+      throw error;
+    } else {
+      res.status(201).json({
+        message: "User updated successfully!",
+        post: { id: new Date().toISOString(), data },
+      });
+    }
   });
 };
 
