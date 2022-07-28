@@ -15,7 +15,7 @@ exports.getUserProfile = (req, res, next) => {
     throw error;
   }
 
-  const email = "dhruvsakariya2304@gmail.com";
+  const email = req.email;
 
   User.findOne({ email })
     .then((userProfile) => {
